@@ -1,0 +1,8 @@
+---
+applications:
+  - name: shield-exporter
+    buildpack: go_buildpack
+    env:
+      SHIELD_EXPORTER_SHIELD_BACKEND_URL: "Your Shield Backend URL"
+      SHIELD_EXPORTER_SHIELD_USERNAME: "Your Shield Username"
+      SHIELD_EXPORTER_SHIELD_PASSWORD: "Your Shield Password"
