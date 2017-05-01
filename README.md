@@ -50,7 +50,7 @@ This exporter can be deployed using the [Prometheus BOSH Release][prometheus-bos
 
 | Flag / Environment Variable | Required | Default | Description |
 | --------------------------- | -------- | ------- | ----------- |
-| `shield.backend_url`<br />`SHIELD_EXPORTER_SHIELD_BACKEND_URL` | Yes | | Shield Backend URL |
+| `shield.backend_url`<br />`SHIELD_EXPORTER_SHIELD_BACKEND_URL` | Yes | | Shield Backend URL *[1]* |
 | `shield.username`<br />`SHIELD_EXPORTER_SHIELD_USERNAME` | Yes | | Shield Username |
 | `shield.password`<br />`SHIELD_EXPORTER_SHIELD_PASSWORD` | Yes | | Shield Password |
 | `filter.collectors`<br />`SHIELD_EXPORTER_FILTER_COLLECTORS` | No | | Comma separated collectors to filter. If not set, all collectors will be enabled (`Archives`, `Jobs`, `RetentionPolicies`, `Schedules`, `Status`, `Stores`, `Targets`, `Tasks`) |
@@ -62,6 +62,8 @@ This exporter can be deployed using the [Prometheus BOSH Release][prometheus-bos
 | `web.auth.pasword`<br />`SHIELD_EXPORTER_WEB_AUTH_PASSWORD` | No | | Password for web interface basic auth |
 | `web.tls.cert_file`<br />`SHIELD_EXPORTER_WEB_TLS_CERTFILE` | No | | Path to a file that contains the TLS certificate (PEM format). If the certificate is signed by a certificate authority, the file should be the concatenation of the server's certificate, any intermediates, and the CA's certificate |
 | `web.tls.key_file`<br />`SHIELD_EXPORTER_WEB_TLS_KEYFILE` | No | | Path to a file that contains the TLS private key (PEM format) |
+
+*[1]* If your Shield backend uses a self signed certificate, set the `SHIELD_SKIP_SSL_VERIFY` environment variable to `true` to skip the SSL verification.
 
 ### Metrics
 
