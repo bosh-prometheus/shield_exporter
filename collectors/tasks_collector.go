@@ -160,9 +160,8 @@ func (c TasksCollector) reportTasksMetrics(ch chan<- prometheus.Metric) error {
 
 		if !task.StartedAt.IsZero() && !task.StoppedAt.IsZero() {
 			duration := task.StoppedAt.Time().Unix() - task.StartedAt.Time().Unix()
-			if duration > 0 {
-				durationSeconds := float64(duration) / float64(time.Second)
-				c.tasksDurationSecondsMetric.WithLabelValues(task.Op, task.Status).Observe(durationSeconds)
+			if duration >= 0 {
+				c.tasksDurationSecondsMetric.WithLabelValues(task.Op, task.Status).Observe(float64(duration))
 			}
 		}
 	}
