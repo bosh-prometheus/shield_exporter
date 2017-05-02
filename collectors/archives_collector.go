@@ -82,7 +82,7 @@ func NewArchivesCollector(
 			Subsystem:   "",
 			Name:        "last_archives_scrape_duration_seconds",
 			Help:        "Duration of the last scrape of Archive metrics from Shield.",
-			ConstLabels: prometheus.Labels{"environment": environment},
+			ConstLabels: prometheus.Labels{"environment": environment, "backend_name": backendName},
 		},
 	)
 
