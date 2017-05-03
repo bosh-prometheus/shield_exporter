@@ -222,8 +222,8 @@
 		},
 		{
 			"ImportPath": "github.com/starkandwayne/shield/api",
-			"Comment": "v0.9.0-2-gfab802f",
-			"Rev": "fab802fbb321ffb5912e66a803862e5af36dd766"
+			"Comment": "v0.10.7-1-gb37c463",
+			"Rev": "b37c463e4e304d3b08fb7e737ae21c67eba7d09e"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
