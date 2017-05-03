@@ -124,6 +124,11 @@
 			"Rev": "9b8c753e8dfb382618ba8fa19b4197b5dcb0434c"
 		},
 		{
+			"ImportPath": "github.com/onsi/gomega/ghttp",
+			"Comment": "v1.1.0-2-g9b8c753",
+			"Rev": "9b8c753e8dfb382618ba8fa19b4197b5dcb0434c"
+		},
+		{
 			"ImportPath": "github.com/onsi/gomega/internal/assertion",
 			"Comment": "v1.1.0-2-g9b8c753",
 			"Rev": "9b8c753e8dfb382618ba8fa19b4197b5dcb0434c"
