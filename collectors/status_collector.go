@@ -179,7 +179,12 @@ func (c StatusCollector) Describe(ch chan<- *prometheus.Desc) {
 func (c StatusCollector) reportStatusMetrics(ch chan<- prometheus.Metric) error {
 	var internalStatus InternalStatus
 
-	uri := api.ShieldURI("/v1/status/internal")
+	uri, err := api.ShieldURI("/v1/status/internal")
+	if err != nil {
+		log.Errorf("Error while creating the Shield URI: %v", err)
+		return err
+	}
+
 	if err := uri.Get(&internalStatus); err != nil {
 		log.Errorf("Error while getting internal status: %v", err)
 		return err
