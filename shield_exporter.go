@@ -184,7 +184,7 @@ func main() {
 
 	shieldStatus, err := api.GetStatus()
 	if err != nil {
-		log.Errorf("Error while getting Shieldstatus: %v", err.Error())
+		log.Errorf("Error while getting Shield Status: %v", err.Error())
 		os.Exit(1)
 	}
 
