@@ -82,6 +82,10 @@ The exporter returns the following `Jobs` metrics:
 
 | Metric | Description | Labels |
 | ------ | ----------- | ------ |
+| *metrics.namespace*_job_last_run | Number of seconds since 1970 since last run of a Shield Job | `environment`, `backend_name`, `job_name` |
+| *metrics.namespace*_job_next_run | Number of seconds since 1970 until next run of a Shield Job | `environment`, `backend_name`, `job_name` |
+| *metrics.namespace*_job_status | Shield Job status (`0` for unknow, `1` for pending, `2` for running, `3` for canceled, `4` for failed, `5` for done) | `environment`, `backend_name`, `job_name` |
+| *metrics.namespace*_job_pause | Shield Job pause status (`1` for paused, `0` for unpaused) | `environment`, `backend_name`, `job_name` |
 | *metrics.namespace*_jobs_total | Labeled total number of Shield Jobs | `environment`, `backend_name`, `job_paused`, `store_plugin`, `target_plugin` |
 | *metrics.namespace*_jobs_scrapes_total | Total number of scrapes for Shield Jobs | `environment`, `backend_name` |
 | *metrics.namespace*_jobs_scrape_errors_total | Total number of scrape errors of Shield Jobs | `environment`, `backend_name` |

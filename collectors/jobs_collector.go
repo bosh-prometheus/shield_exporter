@@ -2,6 +2,7 @@ package collectors
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -9,10 +10,22 @@ import (
 	"github.com/starkandwayne/shield/api"
 )
 
+const (
+	PendingStatus  = "pending"
+	RunningStatus  = "running"
+	CanceledStatus = "canceled"
+	FailedStatus   = "failed"
+	DoneStatus     = "done"
+)
+
 type JobsCollector struct {
 	namespace                           string
 	environment                         string
 	backendName                         string
+	jobLastRunMetric                    *prometheus.GaugeVec
+	jobNextRunMetric                    *prometheus.GaugeVec
+	jobStatusMetric                     *prometheus.GaugeVec
+	jobPausedMetric                     *prometheus.GaugeVec
 	jobsTotalMetric                     *prometheus.GaugeVec
 	jobsScrapesTotalMetric              prometheus.Counter
 	jobsScrapeErrorsTotalMetric         prometheus.Counter
@@ -26,6 +39,50 @@ func NewJobsCollector(
 	environment string,
 	backendName string,
 ) *JobsCollector {
+	jobLastRunMetric := prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace:   namespace,
+			Subsystem:   "job",
+			Name:        "last_run",
+			Help:        "Number of seconds since 1970 since last run of a Shield Job.",
+			ConstLabels: prometheus.Labels{"environment": environment, "backend_name": backendName},
+		},
+		[]string{"job_name"},
+	)
+
+	jobNextRunMetric := prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace:   namespace,
+			Subsystem:   "job",
+			Name:        "next_run",
+			Help:        "Number of seconds since 1970 until next run of a Shield Job.",
+			ConstLabels: prometheus.Labels{"environment": environment, "backend_name": backendName},
+		},
+		[]string{"job_name"},
+	)
+
+	jobStatusMetric := prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace:   namespace,
+			Subsystem:   "job",
+			Name:        "status",
+			Help:        "Shield Job status (0 for unknow, 1 for pending, 2 for running, 3 for canceled, 4 for failed, 5 for done).",
+			ConstLabels: prometheus.Labels{"environment": environment, "backend_name": backendName},
+		},
+		[]string{"job_name"},
+	)
+
+	jobPausedMetric := prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace:   namespace,
+			Subsystem:   "job",
+			Name:        "paused",
+			Help:        "Shield Job pause status (1 for paused, 0 for unpaused).",
+			ConstLabels: prometheus.Labels{"environment": environment, "backend_name": backendName},
+		},
+		[]string{"job_name"},
+	)
+
 	jobsTotalMetric := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Namespace:   namespace,
@@ -91,6 +148,10 @@ func NewJobsCollector(
 		namespace:                           namespace,
 		environment:                         environment,
 		backendName:                         backendName,
+		jobLastRunMetric:                    jobLastRunMetric,
+		jobNextRunMetric:                    jobNextRunMetric,
+		jobStatusMetric:                     jobStatusMetric,
+		jobPausedMetric:                     jobPausedMetric,
 		jobsTotalMetric:                     jobsTotalMetric,
 		jobsScrapesTotalMetric:              jobsScrapesTotalMetric,
 		jobsScrapeErrorsTotalMetric:         jobsScrapeErrorsTotalMetric,
@@ -124,6 +185,10 @@ func (c JobsCollector) Collect(ch chan<- prometheus.Metric) {
 }
 
 func (c JobsCollector) Describe(ch chan<- *prometheus.Desc) {
+	c.jobLastRunMetric.Describe(ch)
+	c.jobNextRunMetric.Describe(ch)
+	c.jobStatusMetric.Describe(ch)
+	c.jobPausedMetric.Describe(ch)
 	c.jobsTotalMetric.Describe(ch)
 	c.jobsScrapesTotalMetric.Describe(ch)
 	c.jobsScrapeErrorsTotalMetric.Describe(ch)
@@ -133,6 +198,10 @@ func (c JobsCollector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (c JobsCollector) reportJobsMetrics(ch chan<- prometheus.Metric) error {
+	c.jobLastRunMetric.Reset()
+	c.jobNextRunMetric.Reset()
+	c.jobStatusMetric.Reset()
+	c.jobPausedMetric.Reset()
 	c.jobsTotalMetric.Reset()
 
 	jobs, err := api.GetJobs(api.JobFilter{})
@@ -146,6 +215,47 @@ func (c JobsCollector) reportJobsMetrics(ch chan<- prometheus.Metric) error {
 	}
 
 	c.jobsTotalMetric.Collect(ch)
+
+	jobsStatus, err := api.GetJobsStatus()
+	if err != nil {
+		if strings.Contains(err.Error(), "Error 501 Not Implemented") {
+			log.Debug("Shield backend does not implement `/v1/status/jobs` API")
+			return nil
+		}
+		log.Errorf("Error while getting jobs status: %+v", err)
+		return err
+	}
+
+	for _, jobHealth := range jobsStatus {
+		c.jobLastRunMetric.WithLabelValues(jobHealth.Name).Set(float64(jobHealth.LastRun))
+		c.jobNextRunMetric.WithLabelValues(jobHealth.Name).Set(float64(jobHealth.NextRun))
+		var jobStatus float64
+		switch jobHealth.Status {
+		case PendingStatus:
+			jobStatus = 1
+		case RunningStatus:
+			jobStatus = 2
+		case CanceledStatus:
+			jobStatus = 3
+		case FailedStatus:
+			jobStatus = 4
+		case DoneStatus:
+			jobStatus = 5
+		default:
+			jobStatus = 0
+		}
+		c.jobStatusMetric.WithLabelValues(jobHealth.Name).Set(jobStatus)
+		jobPaused := 0
+		if jobHealth.Paused {
+			jobPaused = 1
+		}
+		c.jobPausedMetric.WithLabelValues(jobHealth.Name).Set(float64(jobPaused))
+	}
+
+	c.jobLastRunMetric.Collect(ch)
+	c.jobNextRunMetric.Collect(ch)
+	c.jobStatusMetric.Collect(ch)
+	c.jobPausedMetric.Collect(ch)
 
 	return nil
 }
