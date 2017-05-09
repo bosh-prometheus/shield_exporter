@@ -222,8 +222,8 @@
 		},
 		{
 			"ImportPath": "github.com/starkandwayne/shield/api",
-			"Comment": "v0.10.7-1-gb37c463",
-			"Rev": "b37c463e4e304d3b08fb7e737ae21c67eba7d09e"
+			"Comment": "v0.10.8",
+			"Rev": "dd29bff70d4b8347db13baf6c21fa89ebdd2eea7"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/ssh/terminal",
@@ -248,6 +248,26 @@
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
 			"Rev": "a3f3340b5840cee44f372bddb5880fcbc419b46a"
+		},
+		{
+			"ImportPath": "github.com/starkandwayne/shield/vendor/github.com/pborman/uuid",
+			"Comment": "v0.10.8",
+			"Rev": "dd29bff70d4b8347db13baf6c21fa89ebdd2eea7"
+		},
+		{
+			"ImportPath": "github.com/starkandwayne/shield/vendor/github.com/starkandwayne/goutils/timestamp",
+			"Comment": "v0.10.8",
+			"Rev": "dd29bff70d4b8347db13baf6c21fa89ebdd2eea7"
+		},
+		{
+			"ImportPath": "github.com/starkandwayne/shield/vendor/golang.org/x/crypto/ssh/terminal",
+			"Comment": "v0.10.8",
+			"Rev": "dd29bff70d4b8347db13baf6c21fa89ebdd2eea7"
+		},
+		{
+			"ImportPath": "github.com/starkandwayne/shield/vendor/gopkg.in/yaml.v2",
+			"Comment": "v0.10.8",
+			"Rev": "dd29bff70d4b8347db13baf6c21fa89ebdd2eea7"
 		}
 	]
 }
