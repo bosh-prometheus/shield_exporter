@@ -1,5 +1,38 @@
+sudo: required
+
 language: go
 
 go_import_path: github.com/cloudfoundry-community/shield_exporter
 
-script: make test
+services:
+  - docker
+
+env:
+  matrix:
+    - DOCKER_IMAGE_NAME=cfcommunity/shield-exporter
+  global:
+    - secure: akzxaqIV30aQgiOKNgSw4y/R8GEZwKwPLcxkY9480YeXvSNareN8Q/TfCiCfuCj0P1S1UDPrLmHbr0xSdaWotpn+Ch8cN1RdLY0KuERHnOEtMdX9kVRqGmoAcMrZHf9+SxVMuxig6AuIC2/QCsBDZGV0aT0TxnpumvWr7Jn3cJIVK98Dsw0dXBHgBunD13papWkJX0HBnYBj1q9Bxf6DUlqnez2j2ithQL4CXb8RV1aeboOG0vrI0t/au6pUDdPGR4qD+Ex1EzOzTqcJ6A+L4PBnE2vLHtH1feQ6tHWUtjVj13lm2YLqx4ZDSl3Zv3ImVdGFemUD72Ksu0aaZT5MGsV2vaqEfj4ulEOOPXys+dS4bg9ey216quuug3kTnBO512x4PmwGb2XYOGZXPVZJZg5aKSvoXJOA99pF/7v3hjMRIBUksRiXFkRYn4rNJ8kmu8U94jvTfbEy90w9iPqO2HkvRU+YgEdoM9ZoMvRlXUz2yq4qtjNv90xY81JTD+pzD4mrsNqpI0czBN+7JEB7FwFAnSNod9Th1majPcex2J87eQwQ4npC30xUpljDlAHFaPR1LI5K7Q+7umTFRyb6eDjB16nI2LbCnTOstgfVPrgqk2WHtukvflPwAjGFQWnFe/ZxdFkUaagUDQFah+3i97LvTXEM5AfKn5mfTAnTWrU=
+    - secure: BLGauqebJiia86okuuvSfu42qG5h/oUpsDTEBEZVFkuJ/7EtCs7VpTgFPsAYWnvau6tqkMUZ/T98qgSVMuzd8uSFGzQK7GR/4snEWtM9COrX33m9tK1lecod550tmHnnrMyDWqH6FXyI2F+XWoKLreUiXk0T1AtMhv/9jg8DYGrcrno/BqBCrAo2M2GsfGfWhF0SPk5k+aKE0E51+Ft8okASWbS0riKiwXrpqRGh2aJnPYvd8EU4HyUzFs7Hl0chM5bHRJe0sgw9ciiLhQiDorLnI9diCw/cG98cmCoxPPZOZkqYXK0G+QY6GjP7HZvMLbTiN85zio87/LoiexhuteREZ/L1V146xM3QyZr5ea26V6+L2ZaRBU/pN3z/b/NDWjqzg+t6AHniJU4Ps9z+3BShn3x3QFODgM8OUwUhSgHgi1lmtrlq4MqZ2SF3AWwT2BsygrFisCehGDn/2pIM9L+6pEcDahuqlxN/Uv/P+IcqBcGDCbQP9USbcGyEASTeVemVFOqKGucD6XHOjY65yEKichzaIbP5pID3AN3dNWTGfeIUMDkYn7Yr0ovvFGz7WJqXB7wZFu3m49RleKBjJVRrHRZkZsz816PyjBFBrCwKU2pbFRaC3P0//jMFcxcRrE1qEFSvGKPaH+LArcIPll6anKiPYalDmBQ6L9Svj7s=
+    - secure: AXlrRHA3VJj47KwFUx6JiNtxR6ItJIoHbZklDW/PLC5p/t0VNWaRA2YeuWZZ3gOfTe1Hh9tdHdmBG84Tiqjg1MVn8QvU89S5Q1ugY9QhFFf80ydAgWUvAr7sGbjI7BguEyo7qMLHkWUsrIym32xKalaAccHD8YzPj4UocYAuilBGmx88GVRqx9LDRKh18R6vWxwNIDrnuEKk/tbz8nznqQlgAJoShdOSKy3ajXzjTAUH43A6de/6o22CRwIxBrBTxMSaPP1L5Gp3HTaJCguZoRo1M7wkdMfbNxCx1eyRWYC0jyom/95EAAP8lD13FDNJ115v4Qgd9/dh9t55XU8dEhdQMqX40nOR7AZZV6Ae/JMLHAYHsdpBQYmUx+75yMUt7IpnJc4Z8A6vwi4RVnQtYoRwv3KRASpCt93SqOnlffNx0l0jUQKMMC2k1WzDJe1qroCV0W4UCdDICwTZGLSWob2VwnynXX1KqFy+55IJBmHTBRqNbVs97pyambaitd5wAkoPE01T2zIKkAWvFjkpjm6I5F1neGZTLcw5kJK1iURpiTKu7gj8cMHqh7oywagM4MU9H3IchPSjdGj9TDor/JoLhTz6NlfqahOmzY7dYXynKIzyFe4V0l4CkPn+YcqpeQm9p3Ku2JEtaRKAnnaixlmf66qZ77+++eZ81p8UzhI=
+
+jobs:
+  include:
+    - stage: tests
+      script: make test
+    - stage: docker image
+      script:
+        - make crossbuild
+        - ln -s .build/linux-amd64/shield_exporter shield_exporter
+        - |
+          if [ -n "$TRAVIS_TAG" ]; then
+            make docker DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME DOCKER_IMAGE_TAG=$TRAVIS_TAG
+          else
+            make docker DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME DOCKER_IMAGE_TAG=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+          fi
+        - |
+          if [[ "$TRAVIS_TAG" =~ ^v[0-9]+(\.[0-9]+){2}$ ]]; then
+            docker tag "$DOCKER_IMAGE_NAME:$TRAVIS_TAG" "$DOCKER_IMAGE_NAME:latest"
+          fi
+        - docker images
+        - docker login -e $DOCKER_EMAIL -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+        - docker push $DOCKER_IMAGE_NAME

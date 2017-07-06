@@ -25,6 +25,14 @@ $ go install github.com/cloudfoundry-community/shield_exporter
 $ shield_exporter <flags>
 ```
 
+### Docker
+
+To run the shield exporter as a Docker container, run:
+
+``bash
+docker run -p 9179:9179 cfcommunity/shield-exporter <flags>
+```
+
 ### Cloud Foundry
 
 The exporter can be deployed to an already existing [Cloud Foundry][cloudfoundry] environment:
