@@ -29,7 +29,7 @@ vet:
 
 test: deps
 	@echo ">> running tests"
-	@$(GINKGO) -r -race .
+	@$(GINKGO) -r .
 
 promu:
 	@GOOS=$(shell uname -s | tr A-Z a-z) \
