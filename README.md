@@ -29,7 +29,7 @@ $ shield_exporter <flags>
 
 To run the shield exporter as a Docker container, run:
 
-``bash
+```bash
 docker run -p 9179:9179 cfcommunity/shield-exporter <flags>
 ```
 
