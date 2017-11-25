@@ -30,7 +30,7 @@ $ shield_exporter <flags>
 To run the shield exporter as a Docker container, run:
 
 ```bash
-docker run -p 9179:9179 bosh-prometheus/shield-exporter <flags>
+docker run -p 9179:9179 boshprometheus/shield-exporter <flags>
 ```
 
 ### Cloud Foundry
