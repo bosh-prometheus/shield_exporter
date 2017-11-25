@@ -1,0 +1,155 @@
+#!/bin/bash
+
+# shield-pipe - Command Pipelining for Shield Plugins
+#
+# This script inspects its environments and then orchestrates two
+# processes (the store and target plugins) in the correct order,
+# with the correct arguments.
+#
+# Environment Variables
+# ---------------------
+#
+#   SHIELD_OP                 Operation: either 'backup' or 'restore'
+#   SHIELD_TARGET_PLUGIN      Path to the target plugin to use
+#   SHIELD_TARGET_ENDPOINT    The target endpoint config (probably JSON)
+#   SHIELD_STORE_PLUGIN       Path to the store plugin to use
+#   SHIELD_STORE_ENDPOINT     The store endpoint config (probably JSON)
+#   SHIELD_RESTORE_KEY        Archive key for 'restore' operations
+#
+# Exit Codes
+# ----------
+#
+#      0    Success
+#    144    Missing a required environment variable
+#    145    Invalid $SHIELD_OP (not 'backup' or 'restore')
+#
+# Justification
+# -------------
+#
+# This script exists because the Go runtime is unable to handle the
+# complicated pipe/exec scenario Shield requires, due to a bug in the
+# runtime and/or standard library
+#
+# See https://github.com/golang/go/issues/9307
+#     https://github.com/golang/go/issues/9382
+#     https://code.google.com/p/go/issues/detail?id=2266
+#
+
+header() {
+	echo >&2 $*
+	echo $* | sed -e 's/./=/g' >&2
+}
+
+say() {
+	echo >&2 $*
+}
+
+ok() {
+	echo >&2 "OK"
+	echo >&2
+}
+
+fail() {
+	echo -n >&2 "FAILED: "
+	echo    >&2 $*
+}
+
+exiting() {
+	echo >&2
+	echo >&2 "EXITING ${1}"
+	exit $1
+}
+
+validate() {
+	local type="${1}"
+	local bin="${2}"
+	local cfg="${3}"
+	header "Validating ${type} plugin \`$(basename ${bin})\`..."
+	${bin} validate -e "${cfg}" >&2
+	ok
+}
+
+needenv() {
+	header "Validating environment..."
+	for var in "$@"; do
+		eval v=\$$var
+		if [[ -z ${v} ]]; then
+			fail "Missing required $var environment variable; bailing out"
+			exit 144
+		fi
+
+		say "${var} ... found"
+	done
+	ok
+}
+
+trap 'exiting $?' EXIT
+
+case ${SHIELD_OP} in
+(backup)
+	needenv SHIELD_OP              \
+	        SHIELD_STORE_PLUGIN    \
+	        SHIELD_STORE_ENDPOINT  \
+	        SHIELD_TARGET_PLUGIN   \
+	        SHIELD_TARGET_ENDPOINT
+
+	set -e
+	validate TARGET ${SHIELD_TARGET_PLUGIN} "${SHIELD_TARGET_ENDPOINT}"
+	validate STORE  ${SHIELD_STORE_PLUGIN}  "${SHIELD_STORE_ENDPOINT}"
+
+	header "Running backup task (using bzip2 compression)"
+
+	PULSE=$(mktemp -t shield-pipe.XXXXX)
+	trap "rm -f ${PULSE}" QUIT TERM INT
+
+	set -o pipefail
+	${SHIELD_TARGET_PLUGIN} backup -e "${SHIELD_TARGET_ENDPOINT}" | tee >(tail -c1 >$PULSE) | bzip2 | \
+		${SHIELD_STORE_PLUGIN} store -e "${SHIELD_STORE_ENDPOINT}"
+
+	if [[ ! -s ${PULSE} ]]; then
+		rm -f ${PULSE}
+		echo >&2 "NO DATA RECEIVED FROM BACKUP PLUGIN"
+		exit 1
+	fi
+	rm -f ${PULSE}
+
+	exit 0
+	;;
+
+(restore)
+	needenv SHIELD_OP               \
+	        SHIELD_STORE_PLUGIN     \
+	        SHIELD_STORE_ENDPOINT   \
+	        SHIELD_TARGET_PLUGIN    \
+	        SHIELD_TARGET_ENDPOINT  \
+	        SHIELD_RESTORE_KEY
+
+	set -e
+	validate TARGET ${SHIELD_TARGET_PLUGIN} "${SHIELD_TARGET_ENDPOINT}"
+	validate STORE  ${SHIELD_STORE_PLUGIN}  "${SHIELD_STORE_ENDPOINT}"
+
+	header "Running restore task (using bzip2 compression)"
+	set -o pipefail
+	${SHIELD_STORE_PLUGIN} retrieve -k "${SHIELD_RESTORE_KEY}" -e "${SHIELD_STORE_ENDPOINT}" | bunzip2 | \
+		${SHIELD_TARGET_PLUGIN} restore -e "${SHIELD_TARGET_ENDPOINT}"
+	exit 0
+	;;
+
+(purge)
+	needenv SHIELD_OP               \
+	        SHIELD_STORE_PLUGIN     \
+	        SHIELD_STORE_ENDPOINT   \
+	        SHIELD_RESTORE_KEY
+
+	set -e
+	validate STORE  ${SHIELD_STORE_PLUGIN}  "${SHIELD_STORE_ENDPOINT}"
+
+	header "Running purge task"
+	${SHIELD_STORE_PLUGIN} purge -e "${SHIELD_STORE_ENDPOINT}" -k "${SHIELD_RESTORE_KEY}"
+	exit 0
+	;;
+
+(*)
+	echo >&2 "Invalid SHIELD_OP '${SHIELD_OP}'; bailing out"
+	exit 145
+esac

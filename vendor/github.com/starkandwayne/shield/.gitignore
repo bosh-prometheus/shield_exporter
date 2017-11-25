@@ -1,0 +1,32 @@
+/shieldd
+/shield
+/shield-agent
+/shield-schema
+/docker-postgres*
+/dummy
+/elasticsearch
+/mock
+/mysql
+/postgres
+/redis-broker
+/rabbitmq-broker
+/s3
+/swift
+/azure
+/fs
+/scality
+/consul
+/xtrabackup
+/mongo
+/google
+/mock
+.DS_Store
+
+# ignore release testing output
+/artifacts
+
+# where we keep coverage reports...
+/coverage
+
+# secrets
+/ci/credentials.yml
