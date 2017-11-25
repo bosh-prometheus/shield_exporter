@@ -1,10 +1,10 @@
-# Shield Prometheus Exporter [![Build Status](https://travis-ci.org/cloudfoundry-community/shield_exporter.png)](https://travis-ci.org/cloudfoundry-community/shield_exporter)
+# Shield Prometheus Exporter [![Build Status](https://travis-ci.org/bosh-prometheus/shield_exporter.png)](https://travis-ci.org/bosh-prometheus/shield_exporter)
 
 A [Prometheus][prometheus] exporter for [Shield][shield]. Please refer to the [FAQ][faq] for general questions about this exporter.
 
 ## Architecture overview
 
-![](https://cdn.rawgit.com/cloudfoundry-community/shield_exporter/master/architecture/architecture.svg)
+![](https://cdn.rawgit.com/bosh-prometheus/shield_exporter/master/architecture/architecture.svg)
 
 ## Installation
 
@@ -21,7 +21,7 @@ $ ./shield_exporter <flags>
 Using the standard `go install` (you must have [Go][golang] already installed in your local machine):
 
 ```bash
-$ go install github.com/cloudfoundry-community/shield_exporter
+$ go install github.com/bosh-prometheus/shield_exporter
 $ shield_exporter <flags>
 ```
 
@@ -30,7 +30,7 @@ $ shield_exporter <flags>
 To run the shield exporter as a Docker container, run:
 
 ```bash
-docker run -p 9179:9179 cfcommunity/shield-exporter <flags>
+docker run -p 9179:9179 bosh-prometheus/shield-exporter <flags>
 ```
 
 ### Cloud Foundry
@@ -38,7 +38,7 @@ docker run -p 9179:9179 cfcommunity/shield-exporter <flags>
 The exporter can be deployed to an already existing [Cloud Foundry][cloudfoundry] environment:
 
 ```bash
-$ git clone https://github.com/cloudfoundry-community/shield_exporter.git
+$ git clone https://github.com/bosh-prometheus/shield_exporter.git
 $ cd shield_exporter
 ```
 
@@ -179,13 +179,13 @@ Refer to the [contributing guidelines][contributing].
 
 Apache License 2.0, see [LICENSE][license].
 
-[binaries]: https://github.com/cloudfoundry-community/shield_exporter/releases
+[binaries]: https://github.com/bosh-prometheus/shield_exporter/releases
 [cloudfoundry]: https://www.cloudfoundry.org/
-[contributing]: https://github.com/cloudfoundry-community/shield_exporter/blob/master/CONTRIBUTING.md
-[faq]: https://github.com/cloudfoundry-community/shield_exporter/blob/master/FAQ.md
+[contributing]: https://github.com/bosh-prometheus/shield_exporter/blob/master/CONTRIBUTING.md
+[faq]: https://github.com/bosh-prometheus/shield_exporter/blob/master/FAQ.md
 [golang]: https://golang.org/
-[license]: https://github.com/cloudfoundry-community/shield_exporter/blob/master/LICENSE
-[manifest]: https://github.com/cloudfoundry-community/shield_exporter/blob/master/manifest.yml
+[license]: https://github.com/bosh-prometheus/shield_exporter/blob/master/LICENSE
+[manifest]: https://github.com/bosh-prometheus/shield_exporter/blob/master/manifest.yml
 [prometheus]: https://prometheus.io/
-[prometheus-boshrelease]: https://github.com/cloudfoundry-community/prometheus-boshrelease
+[prometheus-boshrelease]: https://github.com/bosh-prometheus/prometheus-boshrelease
 [shield]: https://github.com/starkandwayne/shield

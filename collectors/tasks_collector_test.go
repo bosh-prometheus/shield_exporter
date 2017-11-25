@@ -13,8 +13,8 @@ import (
 	"github.com/starkandwayne/goutils/timestamp"
 	"github.com/starkandwayne/shield/api"
 
-	. "github.com/cloudfoundry-community/shield_exporter/collectors"
-	. "github.com/cloudfoundry-community/shield_exporter/utils/test_matchers"
+	. "github.com/bosh-prometheus/shield_exporter/collectors"
+	. "github.com/bosh-prometheus/shield_exporter/utils/test_matchers"
 )
 
 func init() {

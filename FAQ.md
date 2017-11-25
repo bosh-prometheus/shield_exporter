@@ -25,6 +25,6 @@ No, this exporter only supports targetting a single [Shield][shield] backend. If
 
 We will be glad to address any questions not answered here. Please, just open a [new issue][issues].
 
-[issues]: https://github.com/cloudfoundry-community/shield_exporter/issues
+[issues]: https://github.com/bosh-prometheus/shield_exporter/issues
 [shield]: https://github.com/starkandwayne/shield
-[shield_exporter_metrics]: https://github.com/cloudfoundry-community/shield_exporter#metrics
+[shield_exporter_metrics]: https://github.com/bosh-prometheus/shield_exporter#metrics

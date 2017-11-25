@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	. "github.com/cloudfoundry-community/shield_exporter/filters"
+	. "github.com/bosh-prometheus/shield_exporter/filters"
 )
 
 var _ = Describe("CollectorsFilter", func() {

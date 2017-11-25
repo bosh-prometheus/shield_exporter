@@ -13,8 +13,8 @@ import (
 	"github.com/prometheus/common/version"
 	"github.com/starkandwayne/shield/api"
 
-	"github.com/cloudfoundry-community/shield_exporter/collectors"
-	"github.com/cloudfoundry-community/shield_exporter/filters"
+	"github.com/bosh-prometheus/shield_exporter/collectors"
+	"github.com/bosh-prometheus/shield_exporter/filters"
 )
 
 var (
