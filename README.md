@@ -63,7 +63,7 @@ This exporter can be deployed using the [Prometheus BOSH Release][prometheus-bos
 | `shield.password`<br />`SHIELD_EXPORTER_SHIELD_PASSWORD` | Yes | | Shield Password |
 | `filter.collectors`<br />`SHIELD_EXPORTER_FILTER_COLLECTORS` | No | | Comma separated collectors to filter. If not set, all collectors will be enabled (`Archives`, `Jobs`, `RetentionPolicies`, `Schedules`, `Status`, `Stores`, `Targets`, `Tasks`) |
 | `metrics.namespace`<br />`SHIELD_EXPORTER_METRICS_NAMESPACE` | No | `shield` | Metrics Namespace |
-| `metrics.environment`<br />`SHIELD_EXPORTER_METRICS_ENVIRONMENT` | No | | Environment label to be attached to metrics |
+| `metrics.environment`<br />`SHIELD_EXPORTER_METRICS_ENVIRONMENT` | Yes | | Environment label to be attached to metrics |
 | `web.listen-address`<br />`SHIELD_EXPORTER_WEB_LISTEN_ADDRESS` | No | `:9179` | Address to listen on for web interface and telemetry |
 | `web.telemetry-path`<br />`SHIELD_EXPORTER_WEB_TELEMETRY_PATH` | No | `/metrics` | Path under which to expose Prometheus metrics |
 | `web.auth.username`<br />`SHIELD_EXPORTER_WEB_AUTH_USERNAME` | No | | Username for web interface basic auth |

@@ -1,1 +1,1 @@
-web: shield_exporter -web.listen-address=":$PORT"
+web: shield_exporter --web.listen-address=":$PORT"
