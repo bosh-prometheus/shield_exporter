@@ -1,7 +1,6 @@
 package collectors_test
 
 import (
-	"flag"
 	"net/http"
 
 	. "github.com/onsi/ginkgo"
@@ -9,6 +8,7 @@ import (
 	"github.com/onsi/gomega/ghttp"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 	"github.com/starkandwayne/shield/api"
 
 	. "github.com/bosh-prometheus/shield_exporter/collectors"
@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	flag.Set("log.level", "fatal")
+	log.Base().SetLevel("fatal")
 }
 
 var _ = Describe("TargetsCollectors", func() {

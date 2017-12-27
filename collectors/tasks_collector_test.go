@@ -1,7 +1,6 @@
 package collectors_test
 
 import (
-	"flag"
 	"net/http"
 	"time"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/onsi/gomega/ghttp"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 	"github.com/starkandwayne/goutils/timestamp"
 	"github.com/starkandwayne/shield/api"
 
@@ -18,7 +18,7 @@ import (
 )
 
 func init() {
-	flag.Set("log.level", "fatal")
+	log.Base().SetLevel("fatal")
 }
 
 var _ = Describe("TasksCollectors", func() {
