@@ -7,18 +7,16 @@ go_import_path: github.com/bosh-prometheus/shield_exporter
 services:
   - docker
 
-env:
-  matrix:
-    - DOCKER_IMAGE_NAME=boshprometheus/shield-exporter
-  global:
-    - secure: fSNr/KaGUQO+lo5ywYXZHgjXTzDoFsvxZwh088ha/S+Y0IBcUzmqydOntGSfZruU81suaG+NZ+If+DkdfWc7hGUASImu40PoZMQEN5dDrSc0mIUJzAGVn+drp99Ta10vO1kMuR3G/+YFA/q6Owt0x+KZpFjS2DkU8RQccWStk0q/KsjcOHAAydRfh/GnFBKRUHKb4yJFr3ZiMIxsZRy6WIUAY/Da3kDnnuG1ava+jNbzTlkXB3Uzqmvccl5W8OAosgapy/BpZRLof2o7Y3eU19k6hvh88wX2WTYH8QlDLImz8a+2u98cROu3KnZ6k6yZxuUokOFiNq6TIN7S3ZoMk/1m+B3ikXpUj20+ylze5pPnprxvklvmC9eCYxayq7FcpYaxIj5GGxVKASMfzDUSHgQmLoKvkJlXEuJ7ibJuIexOYav8MVxj7jMCCtT6Hgeciq51ukE0EqMDPQE8DkZCbL6R1R7LFOC1eMYCTNRPFk7C7Y7D0DdlMhuBZfMa87jPWrHKr7PWo2pVUnxmzV0edRUWeQ/Tk46ttEh/v6QO4HB+lq4kXnxyJk5lWczULaxJYclnnuNJNKVmqZlWFjynIZKVAysIFSnvhI69+FsqQgmM9RSDn5yXBd/VAAZUO4dB8U60AtqrBEiNOO+kKX6blNn7c9RutPi8rAMLfbTSq38=
-    - secure: TGxvRQOlYlVqgdwqMajBhb5X9BVVN81Bx/id3DXTr4FhoCPGtpEI583pSgC4hzLzOJQ8pSIPMC/FImsP406vtBc2/t7+TX0OkDoe1l84fW+a7Yh+8faOb5cgbqFehKAFpBD7foSBMkx3u9oeNBEzdG4UOj9H7wG0j4SmhtYhTyYO1/0NucG8RA7WjbtEQ5DHiwmsXl/++9eQDk1ASXI8I3vLT3b3LRv5NgP1qSSW6z3D80TA2e3caWFEzc2JUtXvDLgqNc1/x0DuQ3Xu8CPfRfulY23LeWMZ8bRDrd2m9MQtLoH0A15FWDFSN9D0jhesTlasH69/vNVqU+YSO3XgbzUBthEdHAr37184LRZ9+4Rl2JrV9kbxisdn8cKjO8QgUpZ7nRPfwW5Voew5Zq+HroeV9BDQx24B1lHOmZfXEd+XNJUhnX0QLnCUaF5fksR6D7P5ezMHjvmw3rCOWReKGQ5gBZaMWecHekHH1Q7vUU9Lh+q/y2dW42GgDwDVQo8m+HZKJgUg+UU2VCjGg0f1WLRl5d+FfuyVEWNhG4WE6wnwO9024ms0mzgq7S1sBDHCOFfxKeas+dAvniKqUBCJGE1cOFA6fQy2wj8QDINlfi3i9cSWcNitIoUs+dB6lNz9oypna+RB57/CVYPygwcTETy0qcL8Tm05/yskC7Za/bM=
-
 jobs:
   include:
-    - stage: tests
+    - stage: Run tests
       script: make test
-    - stage: docker image
+
+    - stage: Build docker image
+      env:
+        - DOCKER_IMAGE_NAME=boshprometheus/shield-exporter
+        - secure: aBLGM954OcqJ63XyY7nGKWjBns4dLpr5Mtp0vRRmE+psY2DHtgIuCQhb/+ikF1euXHRJYl7GcRPO/6HiwsICwqfT9itdPtwHISwogfO/keMJk0v6+F9AFk9Lrw0An5iU7CRm9GYQRXKDPt//FnYxCH7S2S9c81gUW6DJX1RANbXFQ183Ot7UiNyYOj190Cz1s7kg22QK8TcYqGeOMwZiSv7stxG84QQdhNsJ/U5duOMg8g+fY99xJ580b4N1TU64IZuRrHcaeKxH+WnWDLsbFAMdBPQ3/x3SAr7LY4G8o7OS8pgPj1fOTPEaefkOYAcbsVgAH8WcMorFq1D3oTIb65WP0i3eCGiZEl7ghrmcJXrTTOuiObl9PVVZnotJBGaXFQGmjnd7+HmjDkt7BynlSHcaKxB+7hfDKzfrY8LcTtOxUgX34CR0GW8VmkQ/GtM9BgkWQoXUUocuQvWX4jHn3jazUlC5G1gmDmYyb161Ox6IG8cIB4aCUI7KRrWWVD6KYCDTFeKLm3MRRDu77vd87uMvVUWyLq48rV6nHdTKD8A9KdZGveDON2ZsBDceF+MQe4KC6COb1oAlojHYwcqsfWk9F8/URVE0PpJoyBqhrEnuSbTss+FID0UoVvf0Q5RelAoXGis4o98FJEd08rd4p5vZdHhfwWHFl+BusVZQ29E=
+        - secure: nFiRb0QL4AbF+/rFyQ2pNlUBMpW0VHQH4tTr6QeBb+STqSZghLQ8bUEPH2CinA5feVjg3i+NEWcJVmD2diSOuIAS7txKEQLfgkmDm3DaygAY3/xufn6ayIsEXMjJu9YpR3FarwVP8kTrxKs3KG5uPOWEqnCIhufa1f90lrbLiZoDj1wcP6Dp55yarVQdQ6zt2bAgttcW/PGYEsv9FnL8Pmf3SJnlerVWGHmWl7Vcj249g9P0GCVTRMtCckXqVTzy7qI7p7x0vC5rLIYKzfGaK/CYH4c/N+mIvqOwiSQfGbAVUSAwSlrAEibd3OPIJ7Q92QzS+6I1Tzo3zvT+iWbFLH5aesf9hxgfSqn8sP6izSVIF7hd+hVHc+tMZln4GUgZn002RRq4KT5S9Grvr7QIiDqYHbft/tLmbp1biwRCPC+pAU+t3+zZNmI3LZYJfLB+b9S5aNuV6+xOBPw9z6/FgDlEQuTKwFRBSSGhxsUxjgUQsWS30CXpbIOnU/gh40NfXWbDNSv2vFmjyJt06bAHe2OgHEntfo4Qi95ezgPw4Y+I5SWX+uDL6OwdUDcymCnfr63UGeJafIO9FRehV2nNAXG8mifAgDDqxGj5C3lyQIPJV6yvPUxgBoMN7V+Xfs1tnlfPRj0E10y4pkV4y3pvAes2xFmPgC+1EEP7jw0MC40=
       script:
         - make crossbuild
         - ln -s .build/linux-amd64/shield_exporter shield_exporter
