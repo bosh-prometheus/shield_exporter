@@ -3,6 +3,7 @@ applications:
   - name: shield-exporter
     buildpack: go_buildpack
     env:
+      GOPACKAGENAME: github.com/bosh-prometheus/shield_exporter
       SHIELD_EXPORTER_SHIELD_BACKEND_URL: "Your Shield Backend URL"
       SHIELD_EXPORTER_SHIELD_USERNAME: "Your Shield Username"
       SHIELD_EXPORTER_SHIELD_PASSWORD: "Your Shield Password"
